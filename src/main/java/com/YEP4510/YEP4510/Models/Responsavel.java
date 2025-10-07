@@ -47,13 +47,12 @@ public class Responsavel {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    public Responsavel(String nome, String rg, String cpf, String email, String telefone, TipoResponsavel tipo, FichaInscricao fichaInscricao) {
+    public Responsavel(String nome, String rg, String cpf, String email, String telefone, TipoResponsavel tipo) {
         this.nome = nome;
         this.rg = rg;
         this.cpf = cpf;
         this.email = email;
         this.telefone = telefone;
         this.tipo = tipo;
-        this.fichaInscricao = fichaInscricao;
     }
 }

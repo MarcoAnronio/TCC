@@ -19,52 +19,40 @@ public class ResponsavelService {
     }
 
     public ResponsavelResponseDTO criarResponsavel(ResponsavelRequestDTO dto){
-        Responsavel responsavel = new Responsavel(dto.getNome(), dto.getRg(), dto.getCpf()
-                , dto.getEmail(), dto.getTelefone(), dto.getTipo(), dto.getFichaInscricao());
+        Responsavel responsavel = new Responsavel(dto.getNome(), dto.getRg(), dto.getCpf(),
+                dto.getEmail(), dto.getTelefone(), dto.getTipo());
 
         Responsavel salvo = responsavelRepository.save(responsavel);
         return new ResponsavelResponseDTO(responsavel.getId(), responsavel.getNome(),
-                responsavel.getFichaInscricao(), responsavel.getTipo());
+                responsavel.getFichaInscricao().getId(), responsavel.getTipo());
     }
 
     public List<ResponsavelResponseDTO> obterTodos(){
         return StreamSupport.stream(responsavelRepository.findAll().spliterator(),false)
                 .map(responsavel -> new ResponsavelResponseDTO(responsavel.getId(),
-                        responsavel.getNome(), responsavel.getFichaInscricao(), responsavel.getTipo()))
+                        responsavel.getNome(), responsavel.getFichaInscricao().getId(), responsavel.getTipo()))
                 .collect(Collectors.toList());
     }
+
+    public ResponsavelResponseDTO obterPorId(int id){
+        Responsavel responsavel = responsavelRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Responsável não encontrado"));
+
+        return new ResponsavelResponseDTO(responsavel.getId(), responsavel.getNome(), responsavel.getFichaInscricao().getId(), responsavel.getTipo());
+    }
+
+    public String editarResponsavel (int id, ResponsavelRequestDTO dto){
+        Responsavel responsavel = responsavelRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Responsavel não encontrado"));
+
+        responsavel.setNome(dto.getNome());
+        responsavel.setRg(dto.getRg());
+        responsavel.setCpf(dto.getCpf());
+        responsavel.setEmail(dto.getEmail());
+        responsavel.setTelefone(dto.getTelefone());
+        responsavel.setTipo(dto.getTipo());
+
+        responsavelRepository.save(responsavel);
+        return "Responsável alterado!";
+    }
 }
-
-/*
-
-
-    public ClubeResponseDTO obterPorId(int id) {
-        Clube clube = clubeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Clube não encontrado!"));
-
-        return new ClubeResponseDTO(clube.getNomeClube(), clube.getCidade());
-    }
-
-
-    public String editarClube (int id, ClubeRequestDTO dto){
-        Clube clube = clubeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Clube não encontado!"));
-
-        clube.setNomeClube(dto.getNomeClube());
-        clube.setCnpj(dto.getCnpj());
-        clube.setCep(dto.getCep());
-        clube.setCidade(dto.getCidade());
-        clube.setEndereco(dto.getEndereco());
-        clube.setFichas(dto.getFichas());
-
-        clubeRepository.save(clube);
-
-        return "Clube alterado!";
-    }
-
-    public void deletarClube(int id) {
-        Clube clube = clubeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Clube não encontrado!"));
-
-        clubeRepository.delete(clube);
-    }*/

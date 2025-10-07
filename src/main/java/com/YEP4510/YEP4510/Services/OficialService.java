@@ -22,12 +22,12 @@ public class OficialService {
     public OficialResponseDTO criarOficial(OficialRequestDTO dto){
         Oficial oficial = new Oficial(dto.getNome(), dto.getCpf(),dto.getRg(), dto.getEmail(),dto.getTelefone());
         Oficial salvo = oficialRepository.save(oficial);
-        return new OficialResponseDTO(oficial.getId(), oficial.getNome(),oficial.getClube());
+        return new OficialResponseDTO(oficial.getId(), oficial.getNome());
     }
 
     public List<OficialResponseDTO> obterTodos(){
         return StreamSupport.stream(oficialRepository.findAll().spliterator(),false)
-                .map(oficial -> new OficialResponseDTO(oficial.getId(), oficial.getNome(), oficial.getClube()))
+                .map(oficial -> new OficialResponseDTO(oficial.getId(), oficial.getNome()))
                 .collect(Collectors.toList());
     }
 
@@ -35,7 +35,7 @@ public class OficialService {
         Oficial oficial = oficialRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Oficial não encontrado"));
 
-        return new OficialResponseDTO(oficial.getId(), oficial.getNome(), oficial.getClube());
+        return new OficialResponseDTO(oficial.getId(), oficial.getNome());
     }
 
     public String editarOficial (int id, OficialRequestDTO dto){

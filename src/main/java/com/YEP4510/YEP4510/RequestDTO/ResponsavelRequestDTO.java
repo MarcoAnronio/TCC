@@ -16,5 +16,4 @@ public class ResponsavelRequestDTO {
     private String email;
     private String telefone;
     private TipoResponsavel tipo;
-    private FichaInscricao fichaInscricao;
 }

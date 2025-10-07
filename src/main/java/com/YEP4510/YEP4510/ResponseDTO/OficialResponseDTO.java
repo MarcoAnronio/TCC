@@ -11,5 +11,4 @@ import lombok.NoArgsConstructor;
 public class OficialResponseDTO {
     private int id;
     private String nome;
-    private Clube clube;
 }

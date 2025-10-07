@@ -1,5 +1,6 @@
 package com.YEP4510.YEP4510.RequestDTO;
 
+import com.YEP4510.YEP4510.Enum.Status;
 import com.YEP4510.YEP4510.Models.FichaInscricao;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,5 +17,8 @@ public class ClubeRequestDTO {
     private String cep;
     private String cidade;
     private String endereco;
-    private List<FichaInscricao> fichas;
+    private Status status;
+
+    private PresidenteRequestDTO presidente;
+    private OficialRequestDTO oficial;
 }

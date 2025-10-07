@@ -21,12 +21,12 @@ public class PresidenteService {
     public PresidenteResponseDTO criarPresidente (PresidenteRequestDTO dto){
         Presidente presidente = new Presidente(dto.getNome(), dto.getCpf(),dto.getRg(), dto.getEmail(),dto.getTelefone());
         Presidente salvo = presidenteRepository.save(presidente);
-        return new PresidenteResponseDTO(presidente.getId(), presidente.getNome(), presidente.getClube());
+        return new PresidenteResponseDTO(presidente.getId(), presidente.getNome());
     }
 
     public List<PresidenteResponseDTO> obterTodos(){
         return StreamSupport.stream(presidenteRepository.findAll().spliterator(),false)
-                .map(presidente -> new PresidenteResponseDTO(presidente.getId(), presidente.getNome(), presidente.getClube()))
+                .map(presidente -> new PresidenteResponseDTO(presidente.getId(), presidente.getNome()))
                 .collect(Collectors.toList());
     }
 
@@ -34,7 +34,7 @@ public class PresidenteService {
         Presidente presidente = presidenteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Presidente não encontrado"));
 
-        return new PresidenteResponseDTO(presidente.getId(), presidente.getNome(), presidente.getClube());
+        return new PresidenteResponseDTO(presidente.getId(), presidente.getNome());
     }
 
     public String editarPresidente (int id, PresidenteRequestDTO dto){

@@ -35,4 +35,16 @@ public class FichaInscricao {
 
     @OneToMany(mappedBy = "fichaInscricao", cascade = CascadeType.ALL)
     private List<Responsavel> responsaveis;
+
+    public FichaInscricao(String nome, LocalDate dataNasc, String cep, int serieEscolar, String telefone, String email, Sexo sexo, Clube clube, List<Responsavel> responsaveis) {
+        this.nome = nome;
+        this.dataNasc = dataNasc;
+        this.cep = cep;
+        this.serieEscolar = serieEscolar;
+        this.telefone = telefone;
+        this.email = email;
+        this.sexo = sexo;
+        this.clube = clube;
+        this.responsaveis = responsaveis;
+    }
 }

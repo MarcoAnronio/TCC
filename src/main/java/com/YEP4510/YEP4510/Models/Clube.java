@@ -33,11 +33,13 @@ public class Clube {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "clube")
-    private Oficial oficial;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_presidente", referencedColumnName = "id")
+    private Presidente presidente;
 
-    @OneToOne(mappedBy = "clube")
-    private  Presidente presidente;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_oficial", referencedColumnName = "id")
+    private Oficial oficial;
 
     @OneToMany(mappedBy = "clube")
     private List<FichaInscricao> fichas;
@@ -45,6 +47,7 @@ public class Clube {
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
         this.status = Status.ATIVO;
     }
 

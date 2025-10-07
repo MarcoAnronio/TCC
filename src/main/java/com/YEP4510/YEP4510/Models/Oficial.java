@@ -28,13 +28,16 @@ public class Oficial {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    /*
     @OneToOne
     @JoinColumn(name = "id_clube", nullable = false, unique = true)
     private Clube clube;
+    */
 
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate

@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class ResponsavelResponseDTO {
     private long id;
     private String nome;
-    private FichaInscricao fichaInscricao;
+    private long fichaInscricaoId;
     private TipoResponsavel tipo;
 }
