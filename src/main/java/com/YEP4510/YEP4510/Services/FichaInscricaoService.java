@@ -28,11 +28,13 @@ public class FichaInscricaoService {
         this.clubeRepository = clubeRepository;
     }
 
-    public FichaInscricaoResponseDTO criarFicha(FichaInscricaoRequestDTO dto){
+    public FichaInscricaoResponseDTO criarFicha(FichaInscricaoRequestDTO dto) {
 
+        // 🔹 Busca o clube
         Clube clube = clubeRepository.findById(dto.getClubeId())
                 .orElseThrow(() -> new RuntimeException("Clube não encontrado"));
 
+        // 🔹 Cria nova ficha
         FichaInscricao fichaInscricao = new FichaInscricao();
         fichaInscricao.setNome(dto.getNome());
         fichaInscricao.setDataNasc(dto.getDataNasc());
@@ -43,7 +45,17 @@ public class FichaInscricaoService {
         fichaInscricao.setSexo(dto.getSexo());
         fichaInscricao.setClube(clube);
 
+        // 🔹 Novos campos adicionados
+        fichaInscricao.setCidade(dto.getCidade());
+        fichaInscricao.setEndereco(dto.getEndereco());
+        fichaInscricao.setPais1(dto.getPais1());
+        fichaInscricao.setPais2(dto.getPais2());
+        fichaInscricao.setPais3(dto.getPais3());
+        fichaInscricao.setPais4(dto.getPais4());
+
+        // 🔹 Mapeia responsáveis (pai/mãe)
         List<Responsavel> responsaveis = dto.getResponsaveis().stream()
+                .filter(rdto -> rdto.getNome() != null && !rdto.getNome().isBlank()) // só adiciona se tiver nome
                 .map(rdto -> {
                     Responsavel responsavel = new Responsavel();
                     responsavel.setNome(rdto.getNome());
@@ -52,15 +64,17 @@ public class FichaInscricaoService {
                     responsavel.setEmail(rdto.getEmail());
                     responsavel.setTelefone(rdto.getTelefone());
                     responsavel.setTipo(rdto.getTipo());
-                    responsavel.setFichaInscricao(fichaInscricao); // vincula à ficha
+                    responsavel.setFichaInscricao(fichaInscricao);
                     return responsavel;
                 })
                 .collect(Collectors.toList());
 
         fichaInscricao.setResponsaveis(responsaveis);
 
+        // 🔹 Salva a ficha e os responsáveis
         FichaInscricao fichaSalva = fichaInscricaoRepository.save(fichaInscricao);
 
+        // 🔹 Monta DTO do clube vinculado
         ClubeResponseDTO clubeDTO = new ClubeResponseDTO(
                 fichaSalva.getClube().getId(),
                 fichaSalva.getClube().getNomeClube(),
@@ -87,7 +101,7 @@ public class FichaInscricaoService {
                 )
         );
 
-
+        // 🔹 Mapeia responsáveis de volta para DTO
         List<ResponsavelResponseDTO> responsavelDTOs = fichaSalva.getResponsaveis().stream()
                 .map(r -> new ResponsavelResponseDTO(
                         r.getId(),
@@ -97,6 +111,7 @@ public class FichaInscricaoService {
                 ))
                 .collect(Collectors.toList());
 
+        // 🔹 Retorna DTO completo da ficha salva
         return new FichaInscricaoResponseDTO(
                 fichaSalva.getId(),
                 fichaSalva.getNome(),
@@ -106,7 +121,13 @@ public class FichaInscricaoService {
                 fichaSalva.getTelefone(),
                 fichaSalva.getEmail(),
                 fichaSalva.getSexo(),
-                clubeDTO,
+                fichaSalva.getCidade(),
+                fichaSalva.getEndereco(),
+                fichaSalva.getPais1(),
+                fichaSalva.getPais2(),
+                fichaSalva.getPais3(),
+                fichaSalva.getPais4(),
+                fichaSalva.getClube().getId(),
                 responsavelDTOs
         );
     }
@@ -114,7 +135,7 @@ public class FichaInscricaoService {
     public List<FichaInscricaoResponseDTO> obterTodos() {
         return StreamSupport.stream(fichaInscricaoRepository.findAll().spliterator(), false)
                 .map(fichaInscricao -> {
-                    // Transforma o Clube da entidade em ClubeResponseDTO
+                    // 🔹 Converte Clube → ClubeResponseDTO
                     ClubeResponseDTO clubeDTO = new ClubeResponseDTO(
                             fichaInscricao.getClube().getId(),
                             fichaInscricao.getClube().getNomeClube(),
@@ -141,8 +162,7 @@ public class FichaInscricaoService {
                             )
                     );
 
-
-                    // Transforma a lista de Responsavel em lista de ResponsavelResponseDTO
+                    // 🔹 Converte Responsáveis → ResponsavelResponseDTO
                     List<ResponsavelResponseDTO> responsavelDTOs = fichaInscricao.getResponsaveis().stream()
                             .map(r -> new ResponsavelResponseDTO(
                                     r.getId(),
@@ -152,7 +172,7 @@ public class FichaInscricaoService {
                             ))
                             .collect(Collectors.toList());
 
-                    // Agora usa as variáveis clubeDTO e responsavelDTOs na criação do DTO final
+                    // 🔹 Retorna DTO completo com novos campos incluídos
                     return new FichaInscricaoResponseDTO(
                             fichaInscricao.getId(),
                             fichaInscricao.getNome(),
@@ -162,14 +182,20 @@ public class FichaInscricaoService {
                             fichaInscricao.getTelefone(),
                             fichaInscricao.getEmail(),
                             fichaInscricao.getSexo(),
-                            clubeDTO,
+                            fichaInscricao.getCidade(),
+                            fichaInscricao.getEndereco(),
+                            fichaInscricao.getPais1(),
+                            fichaInscricao.getPais2(),
+                            fichaInscricao.getPais3(),
+                            fichaInscricao.getPais4(),
+                            fichaInscricao.getClube().getId(),
                             responsavelDTOs
                     );
                 })
                 .collect(Collectors.toList());
     }
 
-    public FichaInscricaoResponseDTO obterPorId(int id) {
+    public FichaInscricaoResponseDTO obterPorId(long id) {
         FichaInscricao fichaInscricao = fichaInscricaoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ficha de inscrição não encontrada"));
 
@@ -217,19 +243,25 @@ public class FichaInscricaoService {
                 fichaInscricao.getTelefone(),
                 fichaInscricao.getEmail(),
                 fichaInscricao.getSexo(),
-                clubeDTO,
+                fichaInscricao.getCidade(),
+                fichaInscricao.getEndereco(),
+                fichaInscricao.getPais1(),
+                fichaInscricao.getPais2(),
+                fichaInscricao.getPais3(),
+                fichaInscricao.getPais4(),
+                fichaInscricao.getClube().getId(),
                 responsavelDTOs
         );
     }
 
-    public FichaInscricaoResponseDTO atualizarFicha(int id, FichaInscricaoRequestDTO dto) {
+    public FichaInscricaoResponseDTO atualizarFicha(long id, FichaInscricaoRequestDTO dto) {
         FichaInscricao fichaExistente = fichaInscricaoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ficha de inscrição não encontrada"));
 
         Clube clube = clubeRepository.findById(dto.getClubeId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Clube não encontrado"));
 
-        // Atualiza os campos
+        // 🔹 Atualiza os campos principais
         fichaExistente.setNome(dto.getNome());
         fichaExistente.setDataNasc(dto.getDataNasc());
         fichaExistente.setCep(dto.getCep());
@@ -239,11 +271,19 @@ public class FichaInscricaoService {
         fichaExistente.setSexo(dto.getSexo());
         fichaExistente.setClube(clube);
 
-        // Remove os responsáveis antigos (CascadeType.ALL cuida disso)
+        // 🔹 Atualiza os novos campos
+        fichaExistente.setCidade(dto.getCidade());
+        fichaExistente.setEndereco(dto.getEndereco());
+        fichaExistente.setPais1(dto.getPais1());
+        fichaExistente.setPais2(dto.getPais2());
+        fichaExistente.setPais3(dto.getPais3());
+        fichaExistente.setPais4(dto.getPais4());
+
+        // 🔹 Substitui os responsáveis
         fichaExistente.getResponsaveis().clear();
 
-        // Adiciona os novos responsáveis
         List<Responsavel> novosResponsaveis = dto.getResponsaveis().stream()
+                .filter(rdto -> rdto.getNome() != null && !rdto.getNome().isBlank()) // ignora vazios
                 .map(rdto -> {
                     Responsavel responsavel = new Responsavel();
                     responsavel.setNome(rdto.getNome());
@@ -259,9 +299,10 @@ public class FichaInscricaoService {
 
         fichaExistente.setResponsaveis(novosResponsaveis);
 
+        // 🔹 Salva a ficha atualizada
         FichaInscricao fichaAtualizada = fichaInscricaoRepository.save(fichaExistente);
 
-        // Constrói DTOs de resposta
+        // 🔹 Constrói o DTO do clube
         ClubeResponseDTO clubeDTO = new ClubeResponseDTO(
                 fichaAtualizada.getClube().getId(),
                 fichaAtualizada.getClube().getNomeClube(),
@@ -288,6 +329,7 @@ public class FichaInscricaoService {
                 )
         );
 
+        // 🔹 Constrói DTOs de responsáveis
         List<ResponsavelResponseDTO> responsavelDTOs = fichaAtualizada.getResponsaveis().stream()
                 .map(r -> new ResponsavelResponseDTO(
                         r.getId(),
@@ -297,6 +339,7 @@ public class FichaInscricaoService {
                 ))
                 .collect(Collectors.toList());
 
+        // 🔹 Retorna a ficha atualizada
         return new FichaInscricaoResponseDTO(
                 fichaAtualizada.getId(),
                 fichaAtualizada.getNome(),
@@ -306,12 +349,18 @@ public class FichaInscricaoService {
                 fichaAtualizada.getTelefone(),
                 fichaAtualizada.getEmail(),
                 fichaAtualizada.getSexo(),
-                clubeDTO,
+                fichaAtualizada.getCidade(),
+                fichaAtualizada.getEndereco(),
+                fichaAtualizada.getPais1(),
+                fichaAtualizada.getPais2(),
+                fichaAtualizada.getPais3(),
+                fichaAtualizada.getPais4(),
+                fichaAtualizada.getClube().getId(),
                 responsavelDTOs
         );
     }
 
-    public void deletarFicha(int id) {
+    public void deletarFicha(long id) {
         FichaInscricao ficha = fichaInscricaoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ficha de inscrição não encontrada"));
 

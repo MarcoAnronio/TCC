@@ -31,14 +31,14 @@ public class OficialService {
                 .collect(Collectors.toList());
     }
 
-    public OficialResponseDTO obterPorId(int id){
+    public OficialResponseDTO obterPorId(long id){
         Oficial oficial = oficialRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Oficial não encontrado"));
 
         return new OficialResponseDTO(oficial.getId(), oficial.getNome());
     }
 
-    public String editarOficial (int id, OficialRequestDTO dto){
+    public String editarOficial (long id, OficialRequestDTO dto){
         Oficial oficial = oficialRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Oficial não encontrado"));
 
@@ -53,7 +53,7 @@ public class OficialService {
         return "Oficial alterado";
     }
 
-    public void deletarOficial(int id){
+    public void deletarOficial(long id){
         Oficial oficial = oficialRepository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Oficial não encomntrado"));
 

@@ -5,5 +5,5 @@ import com.YEP4510.YEP4510.Models.Presidente;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface FichaInscricaoRepository extends CrudRepository<FichaInscricao, Integer>, PagingAndSortingRepository<FichaInscricao, Integer> {
+public interface FichaInscricaoRepository extends CrudRepository<FichaInscricao, Long>, PagingAndSortingRepository<FichaInscricao, Long> {
 }

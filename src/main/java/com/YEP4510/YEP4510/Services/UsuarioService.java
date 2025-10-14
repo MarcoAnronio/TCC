@@ -31,7 +31,7 @@ public class UsuarioService {
                 .collect(Collectors.toList());
     }
 
-    public String editarUsuario (int id, UsuarioRequestDTO dto){
+    public String editarUsuario (long id, UsuarioRequestDTO dto){
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario não encontrado"));
 

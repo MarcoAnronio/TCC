@@ -30,14 +30,14 @@ public class PresidenteService {
                 .collect(Collectors.toList());
     }
 
-    public PresidenteResponseDTO obterPorId(int id){
+    public PresidenteResponseDTO obterPorId(long id){
         Presidente presidente = presidenteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Presidente não encontrado"));
 
         return new PresidenteResponseDTO(presidente.getId(), presidente.getNome());
     }
 
-    public String editarPresidente (int id, PresidenteRequestDTO dto){
+    public String editarPresidente (long id, PresidenteRequestDTO dto){
         Presidente presidente = presidenteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Presidente não encontrado"));
 
@@ -52,7 +52,7 @@ public class PresidenteService {
         return "Presidente alterado";
     }
 
-    public void deletarPresidente(int id){
+    public void deletarPresidente(long id){
         Presidente presidente = presidenteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Presidente não encontrado"));
         presidenteRepository.delete(presidente);

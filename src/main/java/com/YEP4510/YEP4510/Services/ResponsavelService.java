@@ -34,14 +34,14 @@ public class ResponsavelService {
                 .collect(Collectors.toList());
     }
 
-    public ResponsavelResponseDTO obterPorId(int id){
+    public ResponsavelResponseDTO obterPorId(long id){
         Responsavel responsavel = responsavelRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Responsável não encontrado"));
 
         return new ResponsavelResponseDTO(responsavel.getId(), responsavel.getNome(), responsavel.getFichaInscricao().getId(), responsavel.getTipo());
     }
 
-    public String editarResponsavel (int id, ResponsavelRequestDTO dto){
+    public String editarResponsavel (long id, ResponsavelRequestDTO dto){
         Responsavel responsavel = responsavelRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Responsavel não encontrado"));
 

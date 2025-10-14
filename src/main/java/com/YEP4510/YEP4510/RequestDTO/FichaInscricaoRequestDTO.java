@@ -19,6 +19,12 @@ public class FichaInscricaoRequestDTO {
     private String telefone;
     private String email;
     private Sexo sexo;
+    private String cidade;
+    private String endereco;
+    private String pais1;
+    private String pais2;
+    private String pais3;
+    private String pais4;
 
     private Long clubeId;
 
