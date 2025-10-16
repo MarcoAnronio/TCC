@@ -14,4 +14,6 @@ public class ClassificacaoRequestDTO {
     private double reunioes;
     private double prova;
     private double total;
+    private String paisEscolhido;
+
 }

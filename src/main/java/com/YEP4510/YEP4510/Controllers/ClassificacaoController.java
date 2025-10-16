@@ -21,7 +21,7 @@ public class ClassificacaoController {
     private final ClassificacaoService classificacaoService;
 
 
-    @PostMapping("/{fichaId}")
+    @PostMapping
     public ResponseEntity<ClassificacaoResponseDTO> salvarNotas(@Valid @RequestBody ClassificacaoRequestDTO dto){
         ClassificacaoResponseDTO response = classificacaoService.salvarNotas(dto);
         return ResponseEntity.status(201).body(response);
@@ -31,4 +31,17 @@ public class ClassificacaoController {
     public List<ClassificacaoResponseDTO> listarTodos() {
         return classificacaoService.obterTodos();
     }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> atualizarClassificacao(
+            @PathVariable long id,
+            @RequestBody ClassificacaoRequestDTO dto) {
+
+        String mensagem = classificacaoService.atualizarClassificacao(id, dto);
+        return ResponseEntity.ok(mensagem);
+    }
+
+
+
 }

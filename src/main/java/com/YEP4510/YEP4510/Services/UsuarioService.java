@@ -22,12 +22,12 @@ public class UsuarioService {
     public UsuarioResponseDTO criarUsuario(UsuarioRequestDTO dto){
         Usuario usuario = new Usuario(dto.getNome(), dto.getLogin(), dto.getSenha());
         Usuario salvo = usuarioRepository.save(usuario);
-        return new UsuarioResponseDTO(usuario.getNome(), usuario.getLogin());
+        return new UsuarioResponseDTO(usuario.getNome(), usuario.getLogin(), usuario.getTipo().name());
     }
 
     public List<UsuarioResponseDTO> obterTodos() {
         return StreamSupport.stream(usuarioRepository.findAll().spliterator(), false)
-                .map(usuario -> new UsuarioResponseDTO(usuario.getNome(), usuario.getLogin()))
+                .map(usuario -> new UsuarioResponseDTO(usuario.getNome(), usuario.getLogin(), usuario.getTipo().name()))
                 .collect(Collectors.toList());
     }
 

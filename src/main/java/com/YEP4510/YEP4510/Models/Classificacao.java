@@ -23,4 +23,8 @@ public class Classificacao {
     private double reunioes;
     private double prova;
     private double total;
+
+    @Column(name = "pais_escolhido", nullable = true)
+    private String paisEscolhido;
+
 }
