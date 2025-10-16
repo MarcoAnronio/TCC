@@ -2,19 +2,24 @@ package com.YEP4510.YEP4510.Controllers;
 
 import com.YEP4510.YEP4510.Models.Usuario;
 import com.YEP4510.YEP4510.Repositories.UsuarioRepository;
-import com.YEP4510.YEP4510.RequestDTO.UsuarioResponseDTO;
+import com.YEP4510.YEP4510.ResponseDTO.UsuarioResponseDTO;
+import com.YEP4510.YEP4510.Security.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:3000") // ou seu domínio em produção
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
 
     private final UsuarioRepository usuarioRepository;
+    private final JwtUtil jwtUtil;
 
-    public AuthController(UsuarioRepository usuarioRepository) {
+    public AuthController(UsuarioRepository usuarioRepository, JwtUtil jwtUtil) {
         this.usuarioRepository = usuarioRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/login")
@@ -26,10 +31,11 @@ public class AuthController {
             return ResponseEntity.status(401).body("Usuário ou senha incorretos!");
         }
 
-        // ✅ Evita erro se tipo estiver nulo
         String tipo = (usuario.getTipo() != null)
                 ? usuario.getTipo().name()
                 : "CANDIDATO";
+
+        String token = jwtUtil.generateToken(usuario.getLogin(), tipo);
 
         UsuarioResponseDTO response = new UsuarioResponseDTO(
                 usuario.getNome(),
@@ -37,7 +43,9 @@ public class AuthController {
                 tipo
         );
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(Map.of(
+                "token", token,
+                "usuario", response
+        ));
     }
-
 }

@@ -3,7 +3,7 @@ package com.YEP4510.YEP4510.Services;
 import com.YEP4510.YEP4510.Models.Usuario;
 import com.YEP4510.YEP4510.Repositories.UsuarioRepository;
 import com.YEP4510.YEP4510.RequestDTO.UsuarioRequestDTO;
-import com.YEP4510.YEP4510.RequestDTO.UsuarioResponseDTO;
+import com.YEP4510.YEP4510.ResponseDTO.UsuarioResponseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

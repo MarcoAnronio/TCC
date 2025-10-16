@@ -57,27 +57,53 @@ public class ClassificacaoService {
 
 
     public List<ClassificacaoResponseDTO> obterTodos() {
-        return StreamSupport.stream(classificacaoRepository.findAll().spliterator(), false)
-                .sorted((a, b) -> Double.compare(b.getTotal(), a.getTotal()))
-                .map(classificacao -> {
-                    var ficha = classificacao.getFicha();
+        // Busca todas as fichas de inscrição (Iterable → List)
+        List<FichaInscricao> fichas = StreamSupport
+                .stream(fichaRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+
+        // Busca todas as classificações existentes (Iterable → List)
+        List<Classificacao> classificacoes = StreamSupport
+                .stream(classificacaoRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+
+        // Faz o "join": se a ficha tiver classificação, usa as notas; senão, preenche com 0
+        List<ClassificacaoResponseDTO> resultado = fichas.stream().map(ficha -> {
+                    Classificacao classificacao = classificacoes.stream()
+                            .filter(c -> c.getFicha().getId() == ficha.getId())
+                            .findFirst()
+                            .orElse(null);
+
                     String nomeClube = ficha.getClube() != null ? ficha.getClube().getNomeClube() : "—";
                     String cidade = ficha.getCidade() != null ? ficha.getCidade() : "—";
+
+                    double historico = classificacao != null ? classificacao.getHistoricoEscolar() : 0;
+                    double treinamento = classificacao != null ? classificacao.getTreinamento() : 0;
+                    double reunioes = classificacao != null ? classificacao.getReunioes() : 0;
+                    double prova = classificacao != null ? classificacao.getProva() : 0;
+                    double total = classificacao != null ? classificacao.getTotal() : 0;
+                    String paisEscolhido = classificacao != null ? classificacao.getPaisEscolhido() : null;
 
                     return new ClassificacaoResponseDTO(
                             ficha.getId(),
                             ficha.getNome(),
                             nomeClube,
-                            classificacao.getHistoricoEscolar(),
-                            classificacao.getTreinamento(),
-                            classificacao.getReunioes(),
-                            classificacao.getProva(),
-                            classificacao.getTotal(),
-                            classificacao.getPaisEscolhido()
+                            historico,
+                            treinamento,
+                            reunioes,
+                            prova,
+                            total,
+                            paisEscolhido
                     );
                 })
+                // Ordena pelo total (maior primeiro)
+                .sorted((a, b) -> Double.compare(b.getTotal(), a.getTotal()))
                 .collect(Collectors.toList());
+
+        System.out.println("📋 Total de registros combinados: " + resultado.size());
+        return resultado;
     }
+
 
 
 

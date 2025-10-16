@@ -1,4 +1,4 @@
-package com.YEP4510.YEP4510.RequestDTO;
+package com.YEP4510.YEP4510.ResponseDTO;
 
 import com.YEP4510.YEP4510.Enum.TipoUsuario;
 import lombok.AllArgsConstructor;

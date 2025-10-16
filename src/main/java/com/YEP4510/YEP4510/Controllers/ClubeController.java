@@ -2,7 +2,7 @@ package com.YEP4510.YEP4510.Controllers;
 
 import com.YEP4510.YEP4510.RequestDTO.ClubeRequestDTO;
 import com.YEP4510.YEP4510.RequestDTO.UsuarioRequestDTO;
-import com.YEP4510.YEP4510.RequestDTO.UsuarioResponseDTO;
+import com.YEP4510.YEP4510.ResponseDTO.UsuarioResponseDTO;
 import com.YEP4510.YEP4510.ResponseDTO.ClubeResponseDTO;
 import com.YEP4510.YEP4510.Services.ClubeService;
 import jakarta.validation.Valid;

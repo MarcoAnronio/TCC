@@ -1,7 +1,7 @@
 package com.YEP4510.YEP4510.Controllers;
 
 import com.YEP4510.YEP4510.RequestDTO.UsuarioRequestDTO;
-import com.YEP4510.YEP4510.RequestDTO.UsuarioResponseDTO;
+import com.YEP4510.YEP4510.ResponseDTO.UsuarioResponseDTO;
 import com.YEP4510.YEP4510.Services.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
